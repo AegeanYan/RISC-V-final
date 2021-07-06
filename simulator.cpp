@@ -88,7 +88,29 @@ void simulator::ID() {
     registor.decode();
     idEnd.fetched = 0;
     idEnd.pc = registor.pc;
-    if (registor.opt == 111 || registor.opt == 103 || registor.opt == 99){
+    if (j == 112){
+
+    }
+    if (registor.opt == 99){
+        unordered_map<int , pair<bool , bool>>::iterator got = predictor.find(registor.pc);
+        if (got == predictor.end()){
+            predictor.insert(make_pair(registor.pc , make_pair(true , false)));
+            {
+                buBle.IF = true;
+                registor.fetched_instruct = 0;
+                return;
+            }
+        } else{
+            if (!got->second.first){
+                return;
+            } else if (got->second.first){
+                buBle.IF = true;
+                registor.fetched_instruct = 0;
+                return;
+            }
+        }
+    }
+    if (registor.opt == 111 || registor.opt == 103){
         buBle.IF = true;
         registor.fetched_instruct = 0;
     }
@@ -203,7 +225,35 @@ void simulator::EX(int option) {
                 }
                 default: {ex_result.pc = idEnd.pc;ex_result.pcflag = false;}
             }
-            registor.pc = ex_result.pc;
+            if (ex_result.pcflag){
+                unordered_map<int , pair<bool , bool>>::iterator got = predictor.find(idEnd.pc);
+                if (got->second.first){
+                    got->second.second = true;
+                } else{
+                    if (got->second.second){
+                        got->second.second = false;
+                        got->second.first = true;
+                    } else{
+                        got->second.second = true;
+                    }
+                    registor.fetched_instruct = 0;
+                    registor.rd = 0;
+                    registor.rs1 = 0;
+                    registor.rs2 = 0;
+                }
+            } else{
+                unordered_map<int , pair<bool , bool>>::iterator got = predictor.find(idEnd.pc);
+                if (got->second.first){
+                    if (got->second.second)got->second.second = false;
+                    else {
+                        got->second.first = false;
+                        got->second.second = true;
+                    }
+                } else{
+                    got->second.second = false;
+                }
+            }
+            if (ex_result.pcflag)registor.pc = ex_result.pc;
             break;
         }
         case 3:{

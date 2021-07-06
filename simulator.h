@@ -6,12 +6,13 @@
 #define RISC_V_SIMULATOR_SIMULATOR_H
 
 #include <iostream>
+#include <unordered_map>
 #include "Memory.h"
 #include "ALU.h"
 #include "Registor.h"
-#include <unordered_map>
 class simulator {
 private:
+    std::unordered_map<int , std::pair<bool , bool>> predictor;
     Registor registor;
     ALU alu;
     Memory RAM;
