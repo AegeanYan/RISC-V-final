@@ -229,13 +229,17 @@ void simulator::EX(int option) {
                 unordered_map<int , pair<bool , bool>>::iterator got = predictor.find(idEnd.pc);
                 if (got->second.first){
                     got->second.second = true;
+                    right++;
                 } else{
-                    if (got->second.second){
-                        got->second.second = false;
-                        got->second.first = true;
-                    } else{
-                        got->second.second = true;
-                    }
+                    fail++;
+//                    if (got->second.second){
+//                        got->second.second = false;
+//                        got->second.first = true;
+//                    } else{
+//                        got->second.second = true;
+//                    }
+                    got->second.first = true;
+
                     registor.fetched_instruct = 0;
                     registor.rd = 0;
                     registor.rs1 = 0;
@@ -247,9 +251,11 @@ void simulator::EX(int option) {
                     if (got->second.second)got->second.second = false;
                     else {
                         got->second.first = false;
-                        got->second.second = true;
+                        //got->second.second = true;
                     }
+                    fail++;
                 } else{
+                    right++;
                     got->second.second = false;
                 }
             }
@@ -697,6 +703,7 @@ void simulator::run() {
             IF();
             Hazard_detect();
         } catch (...) {
+            //cout << (double)right/(right + fail) * 100 << endl;
             cout << (unsigned int)(registor.reg[10] & (0b11111111u)) << endl;
             break;
         }

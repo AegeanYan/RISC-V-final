@@ -14,6 +14,8 @@ class simulator {
 private:
     std::unordered_map<int , std::pair<bool , bool>> predictor;
     Registor registor;
+    int right = 0;
+    int fail = 0;
     ALU alu;
     Memory RAM;
     int pc;
