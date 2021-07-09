@@ -60,6 +60,9 @@ void simulator::IF() {
     }
 }
 void simulator::ID() {
+    if (j == 90){
+
+    }
     if (buBle.ID){
         buBle.ID = false;
         idEnd.fetched = registor.fetched_instruct;
@@ -88,9 +91,7 @@ void simulator::ID() {
     registor.decode();
     idEnd.fetched = 0;
     idEnd.pc = registor.pc;
-    if (j == 112){
 
-    }
     if (registor.opt == 99){
         unordered_map<int , pair<bool , bool>>::iterator got = predictor.find(registor.pc);
         if (got == predictor.end()){
@@ -241,6 +242,7 @@ void simulator::EX(int option) {
                     got->second.first = true;
 
                     registor.fetched_instruct = 0;
+                    idEnd.fetched = 0;
                     registor.rd = 0;
                     registor.rs1 = 0;
                     registor.rs2 = 0;
