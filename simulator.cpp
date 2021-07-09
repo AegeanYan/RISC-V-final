@@ -545,6 +545,7 @@ void simulator::MEM(int option) {
             break;
         }
         case 3:{
+            //still = 2;
             mem_data.pc = ex_result.pc;
             switch (ex_result.branch) {
                 case 0:{
@@ -582,6 +583,7 @@ void simulator::MEM(int option) {
             break;
         }
         case 35:{
+            //still = 2;
             mem_data.pc = ex_result.pc;
             mem_data.branch = ex_result.branch;
             switch (ex_result.branch) {
@@ -697,13 +699,18 @@ void simulator::run() {
 //    while (!end)WB(mem_data.opt);
     while (true){
         try {
-            WB(mem_data.opt);
-            Hazard_forward();
-            MEM(ex_result.opt);
-            EX(registor.opt);
-            ID();
-            IF();
-            Hazard_detect();
+            if (!still)WB(mem_data.opt);
+            if (!still)Hazard_forward();
+            if (!still)MEM(ex_result.opt);
+            if (!still)EX(registor.opt);
+            if (!still)ID();
+            if (!still)IF();
+            if (!still)Hazard_detect();
+            if (!still){
+                if (mem_data.opt == 3 || mem_data.opt == 35)still = 2;
+            }else{
+                still--;
+            }
         } catch (...) {
             //cout << (double)right/(right + fail) * 100 << endl;
             cout << (unsigned int)(registor.reg[10] & (0b11111111u)) << endl;

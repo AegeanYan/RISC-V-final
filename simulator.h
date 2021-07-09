@@ -18,6 +18,7 @@ private:
     int fail = 0;
     ALU alu;
     Memory RAM;
+    int still = 0;
     int pc;
     int j = 1;
     struct BuBle{
